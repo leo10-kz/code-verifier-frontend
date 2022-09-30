@@ -34,7 +34,7 @@ const LoginForm = () => {
             if (response.status === 201) {
               if (response.data.token) {
                  await sessionStorage.setItem('token', response.data.token);
-                 navigate('/')
+                 navigate('/katas')
                 }else {
                   throw new Error("[ERROR]: Invalid token");
                 }
