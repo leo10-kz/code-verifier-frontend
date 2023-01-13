@@ -12,18 +12,22 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useFormik } from 'formik';
+import { useFormik, ErrorMessage } from 'formik';
 import { login } from '../../services/authService';
 import { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router';
+import * as Yup from 'yup'
 
 const theme = createTheme();
+
+
 
 export default function SignIn() {
   
   const navigate = useNavigate()
 
-  const { values, isSubmitting, setFieldValue, handleSubmit, handleChange } = useFormik({
+
+  const { values, isSubmitting, setFieldValue, handleSubmit, handleChange, errors, touched } = useFormik({
     initialValues:{
       email:"",
       password: ""
@@ -44,7 +48,11 @@ export default function SignIn() {
             }
           })
             .catch(error => console.error(`[LOGIN ERROR]: ${error}`))
-    }
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().email("Invalid email format").required("Email required"),
+      password: Yup.string().required("Password required"),
+    })
   })
 
   return (
@@ -78,6 +86,7 @@ export default function SignIn() {
               value={values.email}
               onChange={handleChange}
             />
+            {errors.email && touched.email && (<ErrorMessage name='email' component='div'></ErrorMessage>)}
             <TextField
               margin="normal"
               required
@@ -90,6 +99,7 @@ export default function SignIn() {
               value={values.password}
               onChange={handleChange}
             />
+            {errors.password && touched.password && (<ErrorMessage name='password' component='div'></ErrorMessage>)}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -31,6 +32,8 @@ import Paper from '@mui/material/Paper';
 
 // List for the Menu
 import MenuItems from './MenuItems';
+import { NewEditor } from '../editor/NewEditor';
+import { TipTapEditor } from '../editor/TipTapEditor';
 
 // Width for Drawer Menu
 const drawerWidth: number = 240;
@@ -92,12 +95,23 @@ const myTheme = createTheme();
 
 const Dashboard = () => {
 
+  const navigate = useNavigate()
   const [open, setOpen] = useState(true);
 
   const toogleDrawer = () => {
       setOpen(!open);
   }
 
+ const sessionActive = () => {
+   const userExisted = sessionStorage.getItem('token');
+
+   if (userExisted === null) {
+    navigate('login')
+   }else{
+    alert('Bienvenido')
+   }
+
+ } 
 
   return (
     <ThemeProvider theme={myTheme}>
@@ -159,7 +173,7 @@ const Dashboard = () => {
           <Divider/>
 
           <List component='nav'>
-            { MenuItems }
+            { <MenuItems open={sessionActive}/> }
           </List>
         </Drawer>   
 
@@ -179,10 +193,11 @@ const Dashboard = () => {
                 <Paper sx={{
                   p:2,
                   display: 'flex',
-                  msFlexDirection: 'column',
+                  flexDirection: 'column',
                   height: 240
                 }}>
-
+                  {/*  <NewEditor/> */}
+                  <TipTapEditor/>
                 </Paper>
               </Grid>
 
