@@ -21,7 +21,7 @@ const styles: any = {
     }
 };
 
-const HighlightElement = (code: string) => (
+const HighlightElement = (code: string ) => (
 
     <Highlight {...defaultProps} code={code} theme={theme} language='tsx' >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
@@ -41,9 +41,9 @@ const HighlightElement = (code: string) => (
 );
 
 
-export const NewEditor = () => {
+export const NewEditor = ({children}: any ) => {
 
-    const [code, setCode] = useState(codeSnippets);
+    const [code, setCode] = useState(children !== " "  ? children : codeSnippets);
 
     const handleChange = (newCode: string) => {
       setCode(newCode);

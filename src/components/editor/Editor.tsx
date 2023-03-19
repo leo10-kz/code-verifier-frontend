@@ -10,7 +10,7 @@ const Editor = ({ lenguage, children }: EditorProps) => {
 
 
   return (
-   <Highlight { ...defaultProps } code={ children } language={ lenguage } >
+   <Highlight { ...defaultProps } code={ children } language={ "javascript" } >
        {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <pre className={className} style={style}>
         {tokens.map((line, i) => (

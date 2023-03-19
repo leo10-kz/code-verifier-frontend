@@ -16,6 +16,7 @@ import { useFormik } from 'formik';
 import { register } from '../../services/authService';
 import { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router';
+import * as Yup from 'yup'
 
 
 const theme = createTheme();
@@ -24,7 +25,7 @@ export default function SignUp() {
 
     const navigate = useNavigate();
 
-  const { values, isSubmitting, setFieldValue, handleSubmit, handleChange } = useFormik({
+  const { values, isSubmitting, setFieldValue, handleSubmit, handleChange, errors } = useFormik({
     initialValues: {
       name: '',
       email: '',
@@ -41,7 +42,17 @@ export default function SignUp() {
         }else {
            throw new Error("[ERROR]: Not created User");
         }
-    }
+    },
+    validationSchema:Yup.object().shape({
+      name: Yup.string().max(10).required('Name is required'),
+      email: Yup.string().email("Invalid email format").required("Email required"),
+      password: Yup.string().required("Password required").matches(
+          /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+          "Password must contain at least 8 characters, one uppercase, one number and one special case character"
+      ),
+      confirmPassword: Yup.string().required('Please confirm your password').oneOf([Yup.ref('password'), null], "Passwords don't match."),
+      age: Yup.number().required('Age is required')
+  })
   })
 
   return (
@@ -75,6 +86,8 @@ export default function SignUp() {
                   autoFocus
                   value={values.name}
                   onChange={handleChange}
+                  error={ errors.name }
+                  helperText={ errors?.name && errors.name }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -88,6 +101,8 @@ export default function SignUp() {
                   type="number"
                   value={values.age}
                   onChange={handleChange}
+                  error={ errors.age }
+                  helperText={ errors?.age && errors.age }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -100,6 +115,8 @@ export default function SignUp() {
                   autoComplete="email"
                   value={values.email}
                   onChange={handleChange}
+                  error={errors.email}
+                  helperText={errors?.email && errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -112,6 +129,8 @@ export default function SignUp() {
                   id="password"
                   value={values.password}
                   onChange={handleChange}
+                  error={ errors.password }
+                  helperText={ errors?.password && errors.password }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -124,6 +143,8 @@ export default function SignUp() {
                   id="confirmPassword"
                   value={values.confirmPassword}
                   onChange={handleChange}
+                  error={ errors.confirmPassword }
+                  helperText={ errors?.name && errors.confirmPassword }
                 />
               </Grid>
               <Grid item xs={12}>

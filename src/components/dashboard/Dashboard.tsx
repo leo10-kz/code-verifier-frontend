@@ -9,7 +9,7 @@ import MuiDrawer from '@mui/material/Drawer';
 
 // Nav Bar
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Typography  from '@mui/material/Typography';
+import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 
 // Material List
@@ -25,15 +25,15 @@ import NotificationIcon from '@mui/icons-material/Notifications'
 
 // Material Grid & Box
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+
 
 // List for the Menu
 import MenuItems from './MenuItems';
-import { NewEditor } from '../editor/NewEditor';
-import { TipTapEditor } from '../editor/TipTapEditor';
+import EditorPanel from '../panels/EditorPanel';
+import KatasPage from '../../pages/KatasPage';
+import UserPanel from '../panels/UsersPanel';
+import RankingPanel from '../panels/RankinPanel';
 
 // Width for Drawer Menu
 const drawerWidth: number = 240;
@@ -97,114 +97,110 @@ const Dashboard = () => {
 
   const navigate = useNavigate()
   const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState('Code Verification Katas');
 
   const toogleDrawer = () => {
-      setOpen(!open);
+    setOpen(!open);
   }
 
- const sessionActive = () => {
-   const userExisted = sessionStorage.getItem('token');
+  const sessionActive = (name: string) => {
+    const userExisted = sessionStorage.getItem('token');
 
-   if (userExisted === null) {
-    navigate('login')
-   }else{
-    alert('Bienvenido')
-   }
+    if (userExisted === null) {
+      navigate('login');
+    } else {
+      setSelected(name);
 
- } 
+    }
+
+  }
 
   return (
     <ThemeProvider theme={myTheme}>
-      <Box sx={{display: 'flex'}}>
-        <CssBaseline/>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
 
         <AppBar position='absolute' open={open}>
-            <Toolbar sx={{pr: '24px'}}>
-              <IconButton
+          <Toolbar sx={{ pr: '24px' }}>
+            <IconButton
               edge='start'
               color='inherit'
               aria-label='open drawer'
               onClick={toogleDrawer}
-              sx={{marginRight: '36px', ...(open && {display: 'none'}) }}
-              >
-                 <MenuIcon/>
+              sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
+            >
+              <MenuIcon />
 
-              </IconButton>
-              <Typography
+            </IconButton>
+            <Typography
               component='h1'
               variant='h6'
               color='inherit'
               noWrap
               sx={{
-               flexGrow: 1
+                flexGrow: 1
               }}
-              >
-                Code Verification Katas
-              </Typography>
-               
-               <IconButton color='inherit'>
-                <Badge badgeContent={10} color='secondary'>
-                  <NotificationIcon/>
-                </Badge>
-               </IconButton>
+            >
+              {selected}
+            </Typography>
 
-               <IconButton color='inherit'>
-                  <LogoutIcon/>
-               </IconButton>
+            <IconButton color='inherit'>
+              <Badge badgeContent={10} color='secondary'>
+                <NotificationIcon />
+              </Badge>
+            </IconButton>
 
-            </Toolbar>     
-        </AppBar> 
+            <IconButton color='inherit'>
+              <LogoutIcon />
+            </IconButton>
+
+          </Toolbar>
+        </AppBar>
 
         <Drawer variant='permanent' open={open}>
           <Toolbar
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            px: [1]
-          }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              px: [1]
+            }}
           >
-           
-           <IconButton color='inherit' onClick={toogleDrawer}>
-                  <ChevronLeftIcon/>
-           </IconButton>
+
+            <IconButton color='inherit' onClick={toogleDrawer}>
+              <ChevronLeftIcon />
+            </IconButton>
 
           </Toolbar>
-          <Divider/>
+          <Divider />
 
           <List component='nav'>
-            { <MenuItems open={sessionActive}/> }
+            {<MenuItems open={sessionActive} />}
           </List>
-        </Drawer>   
+        </Drawer>
 
         <Box
-        component='main'
-        sx={{
-          backgroundColor: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
-          flexGrow: 1,
-          height: '100vh',
-          overflow:'auto'
-        }}
+          component='main'
+          sx={{
+            backgroundColor: (theme) => theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
+            flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto'
+          }}
         >
-          <Toolbar/>
-
-          <Container maxWidth='lg' sx={{ mt: 4, mg: 4 }}>
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper sx={{
-                  p:2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: 240
-                }}>
-                  {/*  <NewEditor/> */}
-                  <TipTapEditor/>
-                </Paper>
-              </Grid>
-
-          </Container>
-        </Box>     
+          <Toolbar />
+          {
+           selected === 'Code Verification Katas'?
+           <EditorPanel/>:
+           selected === 'Katas'?
+           <KatasPage/>:
+           selected === 'Users'?
+           <UserPanel/>:<RankingPanel/>
+          }     
+        </Box>
       </Box>
-      
+
+
     </ThemeProvider>
   )
 }

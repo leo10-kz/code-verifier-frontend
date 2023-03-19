@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,11 +12,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useFormik, ErrorMessage } from 'formik';
+import { useFormik } from 'formik';
 import { login } from '../../services/authService';
 import { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup'
+import Modal from '../modal/Modal';
 
 const theme = createTheme();
 
@@ -24,10 +25,11 @@ const theme = createTheme();
 
 export default function SignIn() {
   
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [modal, setModal] = useState(false)
 
 
-  const { values, isSubmitting, setFieldValue, handleSubmit, handleChange, errors, touched } = useFormik({
+  const { values, handleSubmit, handleChange, errors } = useFormik({
     initialValues:{
       email:"",
       password: ""
@@ -37,11 +39,13 @@ export default function SignIn() {
             console.log(response.status);
 
             if (response.status === 201) {
+              console.log("people",response.data);
               if (response.data.token) {
                 await sessionStorage.setItem('token', response.data.token);
-                navigate('/katas')
+                navigate('/')
               } else {
-                throw new Error("[ERROR]: Invalid token");
+                setModal(!modal);
+                //throw new Error("[ERROR]: Invalid token");
               }
             } else {
               throw new Error("Invalid credentials");
@@ -56,6 +60,7 @@ export default function SignIn() {
   })
 
   return (
+    
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -66,14 +71,14 @@ export default function SignIn() {
             flexDirection: 'column',
             alignItems: 'center',
           }}
-        >
+          >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -85,8 +90,10 @@ export default function SignIn() {
               autoFocus
               value={values.email}
               onChange={handleChange}
+              error={ errors.email }
+              helperText={errors?.email && errors.email}
             />
-            {errors.email && touched.email && (<ErrorMessage name='email' component='div'></ErrorMessage>)}
+            
             <TextField
               margin="normal"
               required
@@ -98,8 +105,10 @@ export default function SignIn() {
               autoComplete="current-password"
               value={values.password}
               onChange={handleChange}
+              error ={errors.password }
+              helperText={errors?.password && errors.password}
             />
-            {errors.password && touched.password && (<ErrorMessage name='password' component='div'></ErrorMessage>)}
+           
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -119,7 +128,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -127,6 +136,7 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
+      {modal && <Modal open={modal} close={setModal}/>}
     </ThemeProvider>
   );
 }

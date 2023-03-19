@@ -13,21 +13,21 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 
 const MenuItems = ( {open} : {open:any} ) => (
     <React.Fragment>
-        <ListItemButton>
+        <ListItemButton onClick={()=>open('Katas')}>
             <ListItemIcon>
                 <DashboardIcon/>
             </ListItemIcon>
             <ListItemText primary='Katas'/>
         </ListItemButton>
 
-        <ListItemButton onClick={open}>
+        <ListItemButton onClick={()=>open('Users')}>
             <ListItemIcon>
                 <PeopleIcon/>
             </ListItemIcon>
             <ListItemText primary='Users'/>
         </ListItemButton>
 
-        <ListItemButton>
+        <ListItemButton onClick={()=>open('Ranking')}>
             <ListItemIcon>
                 <BarChartIcon/>
             </ListItemIcon>

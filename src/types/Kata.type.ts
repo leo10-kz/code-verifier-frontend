@@ -1,5 +1,5 @@
 export type Kata = {
-   _id: string,
+  // _id: string,
    name: string,
    description: string,
    level: string,
@@ -7,5 +7,5 @@ export type Kata = {
    stars: number,
    creator: string, // Id of User
    solution: string,
-   participants: []
+   participants: string[]
 };
